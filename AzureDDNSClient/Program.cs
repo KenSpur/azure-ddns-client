@@ -5,8 +5,8 @@ using AzureDDNSClient.Services;
 using AzureDDNSClient.Services.Implementation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Net.NetworkInformation;
 
 // Init Configuration
 var configuration = new ConfigurationBuilder()
@@ -33,19 +33,20 @@ services.AddScoped(_ => new ArmClient(new DefaultAzureCredential()));
 
 services.AddTransient<IAzureDNSService, AzureDNSService>();
 
+services.AddLogging(builder => builder.AddConsole());
+
 var serviceProvider = services.BuildServiceProvider();
 
 // Get Services
-var whatIsMyIpService = serviceProvider.GetService<IWhatIsMyIpService>();
-var azureDnsService = serviceProvider.GetService<IAzureDNSService>();
+var whatIsMyIpService = serviceProvider.GetRequiredService<IWhatIsMyIpService>();
+var azureDnsService = serviceProvider.GetRequiredService<IAzureDNSService>();
+var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
 // Run
-Console.WriteLine("Getting my Ip ...");
-var ipAddress = await whatIsMyIpService!.GetMyIpAsync();
+logger.LogInformation("Getting my Ip Address ...");
+var ipAddress = await whatIsMyIpService!.GetMyIpAddressAsync();
 
-Console.WriteLine($"My Ip is: {ipAddress}");
+logger.LogInformation("Validate & Update Currently Configured Ip Address ...");
+await azureDnsService.ValidateAndUpdateIpAddressAsync(ipAddress);
 
-Console.WriteLine("Updating Azure Dns ...");
-await azureDnsService!.UpdateIpAddressAsync(ipAddress);
-
-Console.WriteLine("Done!");
+logger.LogInformation("Done!");

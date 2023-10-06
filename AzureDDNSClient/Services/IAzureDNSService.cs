@@ -4,5 +4,5 @@ namespace AzureDDNSClient.Services;
 
 internal interface IAzureDNSService
 {
-    public Task UpdateIpAddressAsync(IPAddress ipAddress);
+    public Task ValidateAndUpdateIpAddressAsync(IPAddress ipAddress);
 }

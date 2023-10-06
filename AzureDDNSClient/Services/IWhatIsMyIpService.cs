@@ -4,5 +4,5 @@ namespace AzureDDNSClient.Services;
 
 internal interface IWhatIsMyIpService
 {
-    public Task<IPAddress> GetMyIpAsync();
+    public Task<IPAddress> GetMyIpAddressAsync();
 }
