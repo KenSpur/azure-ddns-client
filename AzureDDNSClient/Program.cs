@@ -10,7 +10,9 @@ using Microsoft.Extensions.Options;
 
 // Init Configuration
 var configuration = new ConfigurationBuilder()
-    .AddUserSecrets<Program>().Build();
+    .AddUserSecrets<Program>()
+    .AddEnvironmentVariables()
+    .Build();
 
 // Configure Services
 var services = new ServiceCollection();
