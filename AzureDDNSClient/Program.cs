@@ -19,19 +19,26 @@ var services = new ServiceCollection();
 
 services.AddTransient<IConfiguration>(_ => configuration);
 
-services.AddOptions<WhatIsMyIpOptions>().Configure<IConfiguration>(
-    (options, config) => config.GetSection(WhatIsMyIpOptions.Key).Bind(options));
+services.AddOptions<WhatIsMyIpServerOptions>().Configure<IConfiguration>(
+    (options, config) => config.GetSection(WhatIsMyIpServerOptions.Key).Bind(options));
 
 services.AddOptions<AzureOptions>().Configure<IConfiguration>(
     (options, config) => config.GetSection(AzureOptions.Key).Bind(options));
 
 services.AddHttpClient<IWhatIsMyIpService, WhatIsMyIpService>(nameof(WhatIsMyIpService), (provider, client) =>
 {
-    var options = provider.GetRequiredService<IOptions<WhatIsMyIpOptions>>().Value;
+    var options = provider.GetRequiredService<IOptions<WhatIsMyIpServerOptions>>().Value;
     client.BaseAddress = new Uri(options.BaseAddress);
 });
 
-services.AddScoped(_ => new ArmClient(new DefaultAzureCredential()));
+services.AddScoped(provider => {
+    var options = provider.GetRequiredService<IOptions<AzureOptions>>().Value;
+    
+    return new ArmClient(new ClientSecretCredential(
+        options.TenantId,
+        options.ClientId,
+        options.ClientSecret));
+});
 
 services.AddTransient<IAzureDNSService, AzureDNSService>();
 

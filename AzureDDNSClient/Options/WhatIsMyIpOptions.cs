@@ -2,9 +2,9 @@
 
 namespace AzureDDNSClient.Options;
 
-internal class WhatIsMyIpOptions
+internal class WhatIsMyIpServerOptions
 {
-    public static string Key => "WHAT_IS_MY_IP_OPTIONS";
+    public static string Key => "WHAT_IS_MY_IP_SERVER_OPTIONS";
 
     [ConfigurationKeyName("BASE_ADDRESS")]
     public string BaseAddress { get; set; } = string.Empty;
