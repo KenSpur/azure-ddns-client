@@ -1,4 +1,4 @@
-# 🖥️ azure-ddns-client
+# 🖥️ Azure DDNS Client
 
 Easily synchronize the `@` A record in your Azure DNS Zone with the dynamic public IP of your host using the **azure-ddns-client**.
 
